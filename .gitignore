@@ -1,0 +1,9 @@
+node_modules
+.vs/
+.terraform/
+dist/*
+!dist/index.html
+!dist/creator.html
+!dist/sprites.json
+!dist/sprites.png
+*.js.map

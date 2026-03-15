@@ -2,7 +2,7 @@ import { buildLayout } from "./layout";
 
 export default async function main(game) {
     const container = buildLayout(game.app);
-    const worker = new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
+    const worker = new Worker(new URL('./worker.js', import.meta.url));
 
     game.stage.aim.visible = false;
 
@@ -19,6 +19,10 @@ export default async function main(game) {
 
         }
 
+    };
+
+    worker.onerror = (error) => {
+        console.error('AI worker failed:', error);
     };
 
     setInterval(async () => {
