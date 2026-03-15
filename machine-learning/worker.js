@@ -3,7 +3,7 @@ importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest');
 const MODEL_PATH = `yolov5n_web_model/model.json`;
 const LABELS_PATH = `yolov5n_web_model/labels.json`;
 const INPUT_MODEL_DIMENTIONS = 640
-const CLASS_THRESHOLD = 0.6
+const CLASS_THRESHOLD = 0.4
 const TARGET_LABELS = new Set(['bird', 'kite'])
 
 let _labels = []
@@ -100,6 +100,13 @@ function processPrediction({ boxes, scores, classes }, width, height) {
         const centerY = y1 + boxHeight / 2
 
         const prediction = {
+            label,
+            x1,
+            y1,
+            x2,
+            y2,
+            width: boxWidth,
+            height: boxHeight,
             x: centerX,
             y: centerY,
             score: (scores[index] * 100).toFixed(2)
@@ -131,7 +138,12 @@ self.onmessage = async ({ data }) => {
             type: 'prediction',
             ...prediction
         });
+        return;
     }
+
+    postMessage({
+        type: 'no-prediction'
+    });
 };
 
 console.log('🧠 YOLOv5n Web Worker initialized');

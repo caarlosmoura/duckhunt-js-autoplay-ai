@@ -269,11 +269,6 @@ class Stage extends Container {
   }
 
   shotsFiredAtPrediction(prediction, radius) {
-    this.flashScreen.visible = true;
-    _delay(() => {
-      this.flashScreen.visible = false;
-    }, FLASH_MS);
-
     const { duck: predictedDuck, distance: predictedDistance } = this.getClosestAliveDuck(prediction);
     const { duck: fallbackDuck } = this.getClosestAliveDuck();
 

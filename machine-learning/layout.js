@@ -1,7 +1,7 @@
 // layout.js
 import * as PIXI from 'pixi.js';
 
-export function buildLayout(app) {
+export function buildLayout(app, gameStage) {
     // Container for HUD
     const hud = new PIXI.Container();
     hud.y = 50;
@@ -34,8 +34,13 @@ export function buildLayout(app) {
     predictionsText.y = 36;
     hud.addChild(predictionsText);
 
+    const detectionOverlay = new PIXI.Graphics();
+    detectionOverlay.zIndex = 999;
+
     // Add HUD to stage, ensure it's always on top
     app.stage.sortableChildren = true;
+    gameStage.sortableChildren = true;
+    gameStage.addChild(detectionOverlay);
     app.stage.addChild(hud);
 
     // Function to reposition HUD at top-right
@@ -49,9 +54,23 @@ export function buildLayout(app) {
 
     // Utility for updating HUD
     function updateHUD(data) {
-        scoreText.text = `Score: ${data.score}`;
-        predictionsText.text = `Predictions: (${Math.round(data.x)}, ${Math.round(data.y)})`;
+        scoreText.text = `Confidence: ${data.score}%`;
+        predictionsText.text = `${data.label}: (${Math.round(data.x)}, ${Math.round(data.y)})`;
         positionHUD();
+    }
+
+    function drawDetection(data) {
+        detectionOverlay.clear();
+        detectionOverlay
+            .rect(data.x1, data.y1, data.width, data.height)
+            .stroke({
+                width: 3,
+                color: 0x54f073
+            });
+    }
+
+    function clearDetection() {
+        detectionOverlay.clear();
     }
 
     // Position HUD initially and on every resize
@@ -61,6 +80,8 @@ export function buildLayout(app) {
     });
 
     return {
+        clearDetection,
+        drawDetection,
         updateHUD,
     };
 }
